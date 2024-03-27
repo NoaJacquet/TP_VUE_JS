@@ -21,14 +21,38 @@ export default {
     return {
       quizData: [
         {
-          question: "Quelle est la capitale de la France?",
-          choices: ["Paris", "Londres", "Madrid"],
-          answer: "Paris",
-        },
-        {
-          question: "Quel est le plus haut sommet du monde?",
-          choices: ["Mont Everest", "K2", "Makalu"],
-          answer: "Mont Everest",
+          questionnaire: [
+            {
+              nomQuestionnaire : 'Questionnaire1',
+              question : [
+                  {
+                    question: "Quel est le plus haut sommet du monde?",
+                    choices: ["Mont Everest", "K2", "Makalu"],
+                    answer: "Mont Everest"
+                },
+                {
+                    question: "Quel est le plus haut sommet du monde?",
+                    choices: ["Mont Everest", "K2", "Makalu"],
+                    answer: "Mont Everest"
+                }
+              ]
+            },
+            {
+              nomQuestionnaire : 'Questionnaire2',
+              question : [
+                  {
+                    question: "Quel est le plus haut sommet du monde?",
+                    choices: ["Mont Everest", "K2", "Makalu"],
+                    answer: "Mont Everest"
+                },
+                {
+                    question: "Quel est le plus haut sommet du monde?",
+                    choices: ["Mont Everest", "K2", "Makalu"],
+                    answer: "Mont Everest"
+                }
+              ]
+            }
+          ]
         },
       ],
     };
