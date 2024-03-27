@@ -15,3 +15,8 @@
     </ul>
     <p>Réponse : {{ question.answer }}</p>
 </template>
+<style>
+li{
+    list-style-type: none;
+  }
+</style>
