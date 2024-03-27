@@ -1,6 +1,5 @@
 <template>
     <div>
-      <h2>Quiz Questions</h2>
       <ul>
         <li v-for="quiz in quizData" :key="quiz.question">
           <h3>{{ quiz.question }}</h3>
