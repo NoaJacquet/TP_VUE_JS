@@ -11,7 +11,41 @@
 </template>
 
 <script>
+import axios from 'axios';
 import QuizVue from "./components/quiz.vue";
+
+// Définition de la fonction getQuestionnaire en dehors de l'objet Vue
+async function getQuestionnaire() {
+  try {
+    const response = await axios.get('http://127.0.0.1:5000/todo/api/v1.0/questionnaire');
+    const quizData = [];
+    
+    for (const questionnaire of response.data.questionnaires) {
+      const questionnaireName = questionnaire['name'];
+      const lesQuestionsResponse = await axios.get(questionnaire['uri']);
+      
+      for (const questions of lesQuestionsResponse.data.questions) {
+        const questionTitle = questions['title'];
+        const detailQuestionResponse = await axios.get(questions['uri']);
+        const listeSolution = [];
+        const listeChoix = [];
+        for (const detail of detailQuestionResponse.data.solutions) {
+          console.log(detail);
+        }
+        const questionData = {
+          question: question['title'],
+          choices: listeChoix,
+          answer: listeSolution
+        };
+      }
+    }
+    
+    return quizData; // Retourner les données obtenues
+  } catch (error) {
+    console.error('Erreur lors de la récupération des questionnaires :', error);
+    return []; // Retourner un tableau vide en cas d'erreur
+  }
+}
 
 export default {
   components: {
@@ -19,46 +53,16 @@ export default {
   },
   data() {
     return {
-      quizData: [
-        {
-          questionnaire: [
-            {
-              nomQuestionnaire : 'Questionnaire1',
-              question : [
-                  {
-                    question: "Quel est le plus haut sommet du monde?",
-                    choices: ["Mont Everest", "K2", "Makalu"],
-                    answer: "Mont Everest"
-                },
-                {
-                    question: "Quel est le plus haut sommet du monde?",
-                    choices: ["Mont Everest", "K2", "Makalu"],
-                    answer: "Mont Everest"
-                }
-              ]
-            },
-            {
-              nomQuestionnaire : 'Questionnaire2',
-              question : [
-                  {
-                    question: "Quel est le plus haut sommet du monde?",
-                    choices: ["Mont Everest", "K2", "Makalu"],
-                    answer: "Mont Everest"
-                },
-                {
-                    question: "Quel est le plus haut sommet du monde?",
-                    choices: ["Mont Everest", "K2", "Makalu"],
-                    answer: "Mont Everest"
-                }
-              ]
-            }
-          ]
-        },
-      ],
+      quizData: [] // Initialisé à un tableau vide
     };
   },
+  async mounted() { // Utilisation de async pour rendre la fonction asynchrone
+    this.quizData = await getQuestionnaire(); // Attendre le résultat de la fonction getQuestionnaire()
+    console.log(this.quizData)
+  }
 };
 </script>
+
 
 <style scoped>
 .logo {
