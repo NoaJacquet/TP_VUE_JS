@@ -20,11 +20,12 @@
         required: true,
       },
     },
-  };
-  </script>
-  
-  <style scoped>
-  h2 {
-    color: #42b883;
-  }
-  </style>
+  },
+};
+</script>
+
+<style scoped>
+h2 {
+  color: #42b883;
+}
+</style>

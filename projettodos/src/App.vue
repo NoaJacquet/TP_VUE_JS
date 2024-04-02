@@ -1,49 +1,66 @@
 <script>
+import axios from 'axios';
 import question from "./components/QuestionItem.vue";
 import questionnaire from "./components/QuestionnaireItem.vue";
 
+
+// Définition de la fonction getQuestionnaire en dehors de l'objet Vue
+async function getQuestionnaire() {
+  try {
+    const response = await axios.get('http://127.0.0.1:5000/todo/api/v1.0/questionnaire');
+    const quizData = [];
+    
+    for (const questionnaire of response.data.questionnaires) {
+      const questionnaireName = questionnaire['name'];
+      const lesQuestionsResponse = await axios.get(questionnaire['uri']);
+      const questions = [];
+      
+      for (const question of lesQuestionsResponse.data.questions) {
+        const questionTitle = question['title'];
+        const detailQuestionResponse = await axios.get(question['uri']);
+        const solutions = [];
+        const choices = [];
+        
+        for (const detail of detailQuestionResponse.data.solutions) {
+          // Ajouter toutes les valeurs des clés commençant par 'choix'
+          Object.keys(detail).forEach(key => {
+            if (key.startsWith('choi')) {
+              choices.push(detail[key]);
+            }
+            if (key.startsWith('answer')){
+              solutions.push(detail[key]);
+            }
+          });
+        }
+        
+        const questionData = {
+          question: questionTitle,
+          choices: choices,
+          answer: solutions
+        };
+        
+        questions.push(questionData);
+      }
+      
+      const questionnaireData = {
+        nomQuestionnaire: questionnaireName,
+        questions: questions
+      };
+      
+      quizData.push(questionnaireData);
+    }
+    console.log(quizData)
+    return quizData; // Retourner les données obtenues
+  } catch (error) {
+    console.error('Erreur lors de la récupération des questionnaires :', error);
+    return []; // Retourner un tableau vide en cas d'erreur
+  }
+}
 
 export default {
   components: {
     question,
     questionnaire
-  },
-  data() {
-    return {
-      quizData: [
-        {
-          title: "Questionnaire 1",
-          questions: [
-            {
-              title: "Quelle est la capitale de la France?",
-              choices: ["Paris", "Londres", "Madrid"],
-              answer: "Paris"
-            },
-            {
-              title: "Quel est le plus haut sommet du monde?",
-              choices: ["Mont Everest", "K2", "Makalu"],
-              answer: "Mont Everest"
-            }
-          ]
-        },{
-          title: "Questionnaire 2",
-          questions: [
-            {
-              title: "Quelle est la capitale de la Espagne?",
-              choices: ["Paris", "Londres", "Madrid"],
-              answer: "Madrid"
-            },
-            {
-              title: "Quel est le plus haut sommet du monde?",
-              choices: ["Mont Everest", "K2", "Makalu"],
-              answer: "Mont Everest"
-            }
-          ]
-        },
-        // Ajoutez d'autres questionnaires si nécessaire
-      ],
-      selectedQuestionnaire: null
-    };
   },
   methods: {
         afficherQuestions(questionnaire) {
@@ -56,7 +73,16 @@ export default {
                 this.selectedQuestionnaire = null;
             }
         }
-    }
+    },
+  data() {
+    return {
+      quizData: [] // Initialisé à un tableau vide
+    };
+  },
+  async mounted() { // Utilisation de async pour rendre la fonction asynchrone
+    this.quizData = await getQuestionnaire(); // Attendre le résultat de la fonction getQuestionnaire()
+    console.log(this.quizData)
+  }
 };
 </script>
 
