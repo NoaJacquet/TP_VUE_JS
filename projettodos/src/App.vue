@@ -14,6 +14,7 @@
 import axios from 'axios';
 import QuizVue from "./components/quiz.vue";
 
+
 // Définition de la fonction getQuestionnaire en dehors de l'objet Vue
 async function getQuestionnaire() {
   try {
@@ -23,29 +24,51 @@ async function getQuestionnaire() {
     for (const questionnaire of response.data.questionnaires) {
       const questionnaireName = questionnaire['name'];
       const lesQuestionsResponse = await axios.get(questionnaire['uri']);
+      const questions = [];
       
-      for (const questions of lesQuestionsResponse.data.questions) {
-        const questionTitle = questions['title'];
-        const detailQuestionResponse = await axios.get(questions['uri']);
-        const listeSolution = [];
-        const listeChoix = [];
+      for (const question of lesQuestionsResponse.data.questions) {
+        const questionTitle = question['title'];
+        const detailQuestionResponse = await axios.get(question['uri']);
+        const solutions = [];
+        const choices = [];
+        
         for (const detail of detailQuestionResponse.data.solutions) {
-          console.log(detail);
+          // Ajouter toutes les valeurs des clés commençant par 'choix'
+          Object.keys(detail).forEach(key => {
+            if (key.startsWith('choi')) {
+              choices.push(detail[key]);
+            }
+            if (key.startsWith('answer')){
+              solutions.push(detail[key]);
+            }
+          });
         }
+        
         const questionData = {
-          question: question['title'],
-          choices: listeChoix,
-          answer: listeSolution
+          question: questionTitle,
+          choices: choices,
+          answer: solutions
         };
+        
+        questions.push(questionData);
       }
+      
+      const questionnaireData = {
+        nomQuestionnaire: questionnaireName,
+        questions: questions
+      };
+      
+      quizData.push(questionnaireData);
     }
-    
+    console.log(quizData)
     return quizData; // Retourner les données obtenues
   } catch (error) {
     console.error('Erreur lors de la récupération des questionnaires :', error);
     return []; // Retourner un tableau vide en cas d'erreur
   }
 }
+
+
 
 export default {
   components: {
