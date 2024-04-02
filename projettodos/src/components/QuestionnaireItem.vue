@@ -11,18 +11,19 @@
             afficherQuestions() {
                 this.$emit('afficher-questions', this.questionnaire);
             },
-            supprimerQuestionnaire : function(){
-                this.$emit('remove', { id : this.questionnaire.title });
+            supprimerQuestionnaire : function(index){
+                this.$emit('remove', {id:index});
             }
-        }
+        },
+        emits: ['afficher-questions', 'remove']
     }
 </script>
 
 <template>
-    <button @click="afficherQuestions"> {{ questionnaire.title }} </button>
+    <button @click="afficherQuestions"> {{ questionnaire.nomQuestionnaire }} </button>
     <input type = "button"
             class = "btn btn-danger"
             value = "Supprimer"
-            @click = "supprimerQuestionnaire"
+            @click = "supprimerQuestionnaire(index)"
             v-if="isQuestionnaireSelected">
 </template>

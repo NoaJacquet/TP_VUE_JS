@@ -64,18 +64,17 @@ export default {
   },
   methods: {
         afficherQuestions(questionnaire) {
-            this.selectedQuestionnaire = questionnaire;
+          this.selectedQuestionnaire = questionnaire;
+          console.log(this.selectedQuestionnaire.nomQuestionnaire);
         },
-        remove(questionnaire) {
-          console.log("test");
-            this.quizData = this.quizData.filter(item => item.title !== questionnaire.title);
-            if (this.selectedQuestionnaire && this.selectedQuestionnaire.title === questionnaire.title) {
-                this.selectedQuestionnaire = null;
-            }
+        async remove(id) {
+          id ++;
+          await axios.delete('http://127.0.0.1:5000/todo/api/v1.0/questionnaire/'+id)
         }
     },
   data() {
     return {
+      selectedQuestionnaire: null,
       quizData: [] // Initialisé à un tableau vide
     };
   },
@@ -89,14 +88,13 @@ export default {
 <template>
   <h1>Questionnaire IUT'O</h1>
   <h2>Choisissez un questionnaire :</h2>
-  <questionnaire v-for="item in quizData" :key="item.title" :questionnaire="item" @afficher-questions="afficherQuestions"
-  ></questionnaire>
-  <button>+</button>
+  <questionnaire v-for="(item, index) in quizData" :questionnaire="item" :key="index" @afficher-questions="afficherQuestions" @remove="remove(index)"></questionnaire>
   <div v-if="selectedQuestionnaire">
-    <h3>{{ selectedQuestionnaire.title }}</h3> 
+    <h2>{{ this.selectedQuestionnaire.nomQuestionnaire }}</h2> 
     <question v-for="(question, index) in selectedQuestionnaire.questions" :key="index" :question="question"></question>
   </div>
 </template>
+
 
 <style scoped>
 button{
