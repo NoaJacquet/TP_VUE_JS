@@ -46,10 +46,17 @@ export default {
     };
   },
   methods: {
-    afficherQuestions(questionnaire) {
-      this.selectedQuestionnaire = questionnaire;
+        afficherQuestions(questionnaire) {
+            this.selectedQuestionnaire = questionnaire;
+        },
+        remove(questionnaire) {
+          console.log("test");
+            this.quizData = this.quizData.filter(item => item.title !== questionnaire.title);
+            if (this.selectedQuestionnaire && this.selectedQuestionnaire.title === questionnaire.title) {
+                this.selectedQuestionnaire = null;
+            }
+        }
     }
-  }
 };
 </script>
 
@@ -58,8 +65,9 @@ export default {
   <h2>Choisissez un questionnaire :</h2>
   <questionnaire v-for="item in quizData" :key="item.title" :questionnaire="item" @afficher-questions="afficherQuestions"
   ></questionnaire>
+  <button>+</button>
   <div v-if="selectedQuestionnaire">
-    <h3>{{ selectedQuestionnaire.title }}</h3>
+    <h3>{{ selectedQuestionnaire.title }}</h3> 
     <question v-for="(question, index) in selectedQuestionnaire.questions" :key="index" :question="question"></question>
   </div>
 </template>
