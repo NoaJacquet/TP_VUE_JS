@@ -1,18 +1,7 @@
-<template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-    <QuizVue :quizData="quizData" />
-  </div>
-</template>
-
 <script>
 import axios from 'axios';
-import QuizVue from "./components/quiz.vue";
+import question from "./components/QuestionItem.vue";
+import questionnaire from "./components/QuestionnaireItem.vue";
 
 
 // Définition de la fonction getQuestionnaire en dehors de l'objet Vue
@@ -68,12 +57,23 @@ async function getQuestionnaire() {
   }
 }
 
-
-
 export default {
   components: {
-    QuizVue,
+    question,
+    questionnaire
   },
+  methods: {
+        afficherQuestions(questionnaire) {
+            this.selectedQuestionnaire = questionnaire;
+        },
+        remove(questionnaire) {
+          console.log("test");
+            this.quizData = this.quizData.filter(item => item.title !== questionnaire.title);
+            if (this.selectedQuestionnaire && this.selectedQuestionnaire.title === questionnaire.title) {
+                this.selectedQuestionnaire = null;
+            }
+        }
+    },
   data() {
     return {
       quizData: [] // Initialisé à un tableau vide
@@ -86,18 +86,20 @@ export default {
 };
 </script>
 
+<template>
+  <h1>Questionnaire IUT'O</h1>
+  <h2>Choisissez un questionnaire :</h2>
+  <questionnaire v-for="item in quizData" :key="item.title" :questionnaire="item" @afficher-questions="afficherQuestions"
+  ></questionnaire>
+  <button>+</button>
+  <div v-if="selectedQuestionnaire">
+    <h3>{{ selectedQuestionnaire.title }}</h3> 
+    <question v-for="(question, index) in selectedQuestionnaire.questions" :key="index" :question="question"></question>
+  </div>
+</template>
 
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+button{
+  margin-left: 1vw;
 }
 </style>
