@@ -69,7 +69,7 @@ export default {
           this.selectedQuestionnaire = questionnaire;
         },
         async createQuestionnaire(){
-          if (this.creationQuestionnaire && this.newQuestionnaireName!== undefined) {
+          if (this.creationQuestionnaire && this.newQuestionnaireName !== undefined) {
             await axios.post("http://127.0.0.1:5000/todo/api/v1.0/questionnaire/" ,{
               name : this.newQuestionnaireName
             });
@@ -113,6 +113,7 @@ export default {
           window.location.reload();
         },
         async removeQuestion(uriQuestion) {
+          console.log(uriQuestion);
           await axios.delete(uriQuestion);
           window.location.reload();
         },
@@ -152,7 +153,7 @@ export default {
   <questionnaire v-for="(item) in quizData" :questionnaire="item" @afficher-questions="afficherQuestions" @removeQuestionnaire="removeQuestionnaire" @modifierQuestionnaire="modifierQuestionnaire"></questionnaire>
   <input v-if="modificationQuestionnaire" type="text"  v-model="newQuestionnaireName"></input>
   <input v-if="creationQuestionnaire" type="text"  v-model="newQuestionnaireName"></input>
-  <button @click="createQuestionnaire">+</button>
+  <button @click="createQuestionnaire">Ajouter Questionnaire</button>
   <div v-if="selectedQuestionnaire">
     <h2>{{ this.selectedQuestionnaire.nomQuestionnaire }}</h2> 
     <question v-for="(question, index) in selectedQuestionnaire.questions" :key="index" :question="question" @removeQuestion="removeQuestion"></question>
@@ -169,7 +170,6 @@ export default {
       <input v-if="newQuestionType === 'multiple'" type="text" placeholder="Choix 3" v-model="newQuestionChoix3"></input>
       <input v-if="newQuestionType === 'multiple'" type="text" placeholder="Choix 4" v-model="newQuestionChoix4"></input>
     </template>
-    <button @click="createQuestion">+</button>
   </div>
 </template>
 
