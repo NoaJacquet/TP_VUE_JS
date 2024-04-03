@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+    <html lang="fr">
+        <head>
+            <meta charset="utf-8">
+            <meta name="questionnaire">
+            <title>questionnaire</title>
+            <script src="todo.js"></script>
+        </head>
+        <body> 
+            <main>
+                <h1>Questionnaire</h1>
+                <ul class="questionnaire" id="questionnaire">
+
+                </ul>
+                <button id="ajouter">voir questionnaire</button>
+                <input type="text" id="question" placeholder="question">
+                <ul class="reponse" id="reponse">
+                    </ul>
+                <input type="text" id="texte" placeholder="texte">
+                <select id="type_question">
+                    <option value="simple">simple</option>
+                    <option value="multiple">multiple</option>
+                    </select>
+                <input type="text" id="id_questionnaire" placeholder="id_questionnaire">
+                <div id="inputSimple">
+                    <input type="text" id="reponse" placeholder="reponse">
+                    <input type="text" id="choix1" placeholder="id_question">
+                    <input type="text" id="choix2" placeholder="id_reponse">
+                </div>
+                <div id="inputMultiple">
+                    <input type="text" id="reponse1" placeholder="reponse">
+                    <input type="text" id="reponse2" placeholder="reponse">
+                    <input type="text" id="id_question1" placeholder="id_question">
+                    <input type="text" id="id_question2" placeholder="id_reponse">
+                    <input type="text" id="id_question3" placeholder="id_reponse">
+                    <input type="text" id="id_question4" placeholder="id_reponse">
+                </div>
+
+                <button id="ajouter_question">ajouter question</button>
+                
+
+
+            </main>
+        </body>
