@@ -69,7 +69,7 @@ export default {
           this.selectedQuestionnaire = questionnaire;
         },
         async createQuestionnaire(){
-          if (this.creationQuestionnaire && this.newQuestionnaireName!== undefined) {
+          if (this.creationQuestionnaire && this.newQuestionnaireName !== undefined) {
             await axios.post("http://127.0.0.1:5000/todo/api/v1.0/questionnaire/" ,{
               name : this.newQuestionnaireName
             });
@@ -78,7 +78,7 @@ export default {
           this.creationQuestionnaire = !this.creationQuestionnaire;
         }, 
         async createQuestion(){
-          if (this.creationQuestion) {
+          if (this.creationQuestion && this.newQuestionTitle !== undefined && this.newQuestionChoix1 !== undefined && this.newQuestionChoix2 !== undefined && this.newQuestionAnswer !== undefined) {
             await axios.post("http://127.0.0.1:5000/todo/api/v1.0/questionnaire/ajout_question" ,{
               questionnaire_id : this.selectedQuestionnaire.uriQuestionnaire.charAt(this.selectedQuestionnaire.uriQuestionnaire.length - 1),
               QuestionType : 'simple',
@@ -96,6 +96,7 @@ export default {
           window.location.reload();
         },
         async removeQuestion(uriQuestion) {
+          console.log(uriQuestion);
           await axios.delete(uriQuestion);
           window.location.reload();
         },
@@ -130,7 +131,7 @@ export default {
   <questionnaire v-for="(item) in quizData" :questionnaire="item" @afficher-questions="afficherQuestions" @removeQuestionnaire="removeQuestionnaire" @modifierQuestionnaire="modifierQuestionnaire"></questionnaire>
   <input v-if="modificationQuestionnaire" type="text"  v-model="newQuestionnaireName"></input>
   <input v-if="creationQuestionnaire" type="text"  v-model="newQuestionnaireName"></input>
-  <button @click="createQuestionnaire">+</button>
+  <button @click="createQuestionnaire">Ajouter Questionnaire</button>
   <div v-if="selectedQuestionnaire">
     <h2>{{ this.selectedQuestionnaire.nomQuestionnaire }}</h2> 
     <question v-for="(question, index) in selectedQuestionnaire.questions" :key="index" :question="question" @removeQuestion="removeQuestion"></question>
@@ -138,7 +139,7 @@ export default {
     <input v-if="creationQuestion" type="text" placeholder="Choix 1" v-model="newQuestionAnswer"></input>
     <input v-if="creationQuestion" type="text" placeholder="Choix 2" v-model="newQuestionChoix1"></input>
     <input v-if="creationQuestion" type="text" placeholder="Reponse" v-model="newQuestionChoix2"></input>
-    <button @click="createQuestion">+</button>
+    <button @click="createQuestion">Ajouter Question</button>
   </div>
 </template>
 
