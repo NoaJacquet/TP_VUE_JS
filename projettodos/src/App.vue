@@ -77,20 +77,37 @@ export default {
           }
           this.creationQuestionnaire = !this.creationQuestionnaire;
         }, 
-        async createQuestion(){
+        async createQuestion() {
           if (this.creationQuestion) {
-            await axios.post("http://127.0.0.1:5000/todo/api/v1.0/questionnaire/ajout_question" ,{
-              questionnaire_id : this.selectedQuestionnaire.uriQuestionnaire.charAt(this.selectedQuestionnaire.uriQuestionnaire.length - 1),
-              QuestionType : 'simple',
-              title : this.newQuestionTitle,
-              choix1 : this.newQuestionChoix1,
-              choix2 : this.newQuestionChoix2,
-              answer : this.newQuestionAnswer
-            });
-            window.location.reload();
+            let postData = {
+              questionnaire_id: this.selectedQuestionnaire.uriQuestionnaire.charAt(this.selectedQuestionnaire.uriQuestionnaire.length - 1),
+              title: this.newQuestionTitle,
+              QuestionType: this.newQuestionType
+            };
+
+            if (this.newQuestionType === 'simple') {
+              postData.answer = this.newQuestionAnswer1;
+              postData.choix1 = this.newQuestionChoix1;
+              postData.choix2 = this.newQuestionChoix2;
+            } else if (this.newQuestionType === 'multiple') {
+              postData.answers1 = this.newQuestionAnswer1;
+              postData.answers2 = this.newQuestionAnswer2;
+              postData.choix1 = this.newQuestionChoix1;
+              postData.choix2 = this.newQuestionChoix2;
+              postData.choix3 = this.newQuestionChoix3;
+              postData.choix4 = this.newQuestionChoix4;
+            }
+
+            try {
+              await axios.post("http://127.0.0.1:5000/todo/api/v1.0/questionnaire/ajout_question", postData);
+              window.location.reload();
+            } catch (error) {
+              console.error('Erreur lors de la création de la question :', error);
+            }
           }
           this.creationQuestion = !this.creationQuestion;
         },
+
         async removeQuestionnaire(uriQuestionnaire) {
           await axios.delete(uriQuestionnaire);
           window.location.reload();
@@ -115,7 +132,12 @@ export default {
       creationQuestionnaire: false,
       creationQuestion: false,
       selectedQuestionnaire: null,
-      quizData: [] // Initialisé à un tableau vide
+      quizData: [],
+      newQuestionType: 'simple',
+      newQuestionAnswer1: '',
+      newQuestionAnswer2: '',
+      newQuestionChoix3: '',
+      newQuestionChoix4: ''
     };
   },
   async mounted() { // Utilisation de async pour rendre la fonction asynchrone
@@ -134,10 +156,19 @@ export default {
   <div v-if="selectedQuestionnaire">
     <h2>{{ this.selectedQuestionnaire.nomQuestionnaire }}</h2> 
     <question v-for="(question, index) in selectedQuestionnaire.questions" :key="index" :question="question" @removeQuestion="removeQuestion"></question>
+    <select v-model="newQuestionType">
+      <option value="simple">Simple</option>
+      <option value="multiple">Multiple</option>
+    </select>
     <input v-if="creationQuestion" type="text" placeholder="Titre" v-model="newQuestionTitle"></input>
-    <input v-if="creationQuestion" type="text" placeholder="Choix 1" v-model="newQuestionAnswer"></input>
-    <input v-if="creationQuestion" type="text" placeholder="Choix 2" v-model="newQuestionChoix1"></input>
-    <input v-if="creationQuestion" type="text" placeholder="Reponse" v-model="newQuestionChoix2"></input>
+    <template v-if="creationQuestion">
+      <input v-if="newQuestionType === 'simple' || newQuestionType === 'multiple'" type="text" placeholder="Réponse 1" v-model="newQuestionAnswer1"></input>
+      <input v-if="newQuestionType === 'multiple'" type="text" placeholder="Réponse 2" v-model="newQuestionAnswer2"></input>
+      <input v-if="newQuestionType === 'simple' || newQuestionType === 'multiple'" type="text" placeholder="Choix 1" v-model="newQuestionChoix1"></input>
+      <input v-if="newQuestionType === 'simple' || newQuestionType === 'multiple'" type="text" placeholder="Choix 2" v-model="newQuestionChoix2"></input>
+      <input v-if="newQuestionType === 'multiple'" type="text" placeholder="Choix 3" v-model="newQuestionChoix3"></input>
+      <input v-if="newQuestionType === 'multiple'" type="text" placeholder="Choix 4" v-model="newQuestionChoix4"></input>
+    </template>
     <button @click="createQuestion">+</button>
   </div>
 </template>
