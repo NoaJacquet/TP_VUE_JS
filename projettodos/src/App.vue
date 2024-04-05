@@ -170,6 +170,7 @@ export default {
       <input v-if="newQuestionType === 'multiple'" type="text" placeholder="Choix 3" v-model="newQuestionChoix3"></input>
       <input v-if="newQuestionType === 'multiple'" type="text" placeholder="Choix 4" v-model="newQuestionChoix4"></input>
     </template>
+    <button @click="createQuestion">+</button>
   </div>
 </template>
 
